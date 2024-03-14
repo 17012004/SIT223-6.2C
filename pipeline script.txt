@@ -1,0 +1,91 @@
+pipeline {
+    agent any
+    
+   
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/17012004/LoginandSignUP.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Dependencies Installed'
+                echo 'Using Build Environments'
+            }
+        }
+        stage('Unit Tests') {
+            steps {
+                echo 'Running Unit Tests using JUnit'
+                
+            }
+        }
+        stage('Code Analysis') {
+            steps {
+                echo 'Performing Code Analysis using SonarQube'
+                
+            }
+        }
+        stage('Deploy to Staging') {
+            steps {
+                echo 'Deploying to Apache Tomcat (Staging)'
+              
+            }
+        }
+        stage('Integration Tests on Staging') {
+            steps {
+                echo 'Running Integration Tests on Staging Environment'
+               
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying to Apache Tomcat (Production)'
+                
+            }
+        }
+    }
+    
+    post {
+        success {
+            
+            script {
+               
+                def powershellCommand = """
+                    \$SMTPServer = "smtp.gmail.com"
+                    \$SMTPFrom = "vanshbhai236@gmail.com"
+                    \$SMTPTo = "vanshbhai236@gmail.com"
+                    \$SMTPSubject = "Pipeline Success"
+                    \$SMTPBody = "Execution Passed"
+                    \$SMTPUsername = "vanshbhai236@gmail.com"
+                    \$SMTPPassword = "unfr hgpe mwdc mvrz"
+    
+                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                """
+                powershell(powershellCommand)
+            }
+            
+            echo 'Pipeline Execution Passed'
+        }
+        failure {
+           
+            script {
+               
+                def powershellCommand = """
+                    \$SMTPServer = "smtp.gmail.com"
+                    \$SMTPFrom = "vanshbhai236@gmail.com"
+                    \$SMTPTo = "vanshbhai236@gmail.com"
+                    \$SMTPSubject = "Pipeline Failure"
+                    \$SMTPBody = "Execution Failed"
+                    \$SMTPUsername = "vanshbhai236@gmail.com"
+                    \$SMTPPassword = "unfr hgpe mwdc mvrz"
+    
+                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
+                """
+                powershell(powershellCommand)
+            }
+            echo 'Pipeline Execution Failed'
+        }
+    }
+}
