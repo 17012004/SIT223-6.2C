@@ -1,91 +1,78 @@
 pipeline {
     agent any
-    
-   
-    stages {
-        stage('Git Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/17012004/LoginandSignUP.git'
-            }
-        }
-        
+   stages {
         stage('Build') {
             steps {
-                echo 'Dependencies Installed'
-                echo 'Using Build Environments'
+                echo "Fetching the source code from GitHub"
+                echo "Compiling the code and generating artifacts." // will print
             }
         }
-        stage('Unit Tests') {
+        stage('Unit and Integration Tests') {
             steps {
-                echo 'Running Unit Tests using JUnit'
-                
+                echo "Running unit tests started and completed"
+                echo "Running integration tests started and completed"
+            }
+            post {
+                success {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Unit and Integration Tests Success',
+                        body: 'The unit and integration tests have succeeded. Find attached logs for more information.'
+                }
+                failure {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Unit and Integration Tests Failed',
+                        body: 'The unit and integration tests have failed. Find attached logs for more information.'
+                }
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'Performing Code Analysis using SonarQube'
-                
+                echo "Running Code Analysis started and completed"
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                echo "Running Security Scan started and completed"
+            }
+            post {
+                success {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Security Scan Success',
+                        body: 'The Security Scan has succeeded. Find attached logs for more information.'
+                }
+                failure {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Security Scan Failed',
+                        body: 'The Security Scan has failed. Find attached logs for more information.'
+                }
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to Apache Tomcat (Staging)'
-              
+                echo "Running Deploy to Staging started and completed"
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Running Integration Tests on Staging Environment'
-               
+                echo "Running Integration Tests on Staging started and completed"
+            }
+            post {
+                success {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Integration Tests on Staging Success',
+                        body: 'The Integration Tests on Staging have succeeded. Find attached logs for more information.'
+                }
+                failure {
+                    mail to: 'vanshbhai236@gmail.com',
+                        subject: 'Integration Tests on Staging Failed',
+                        body: 'The Integration Tests on Staging have failed. Find attached logs for more information.'
+                }
             }
         }
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to Apache Tomcat (Production)'
-                
+                echo "Running Integration Tests on Staging started and completed"
             }
-        }
-    }
-    
-    post {
-        success {
-            
-            script {
-               
-                def powershellCommand = """
-                    \$SMTPServer = "smtp.gmail.com"
-                    \$SMTPFrom = "vanshbhai236@gmail.com"
-                    \$SMTPTo = "vanshbhai236@gmail.com"
-                    \$SMTPSubject = "Pipeline Success"
-                    \$SMTPBody = "Execution Passed"
-                    \$SMTPUsername = "vanshbhai236@gmail.com"
-                    \$SMTPPassword = "unfr hgpe mwdc mvrz"
-    
-                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
-                """
-                powershell(powershellCommand)
-            }
-            
-            echo 'Pipeline Execution Passed'
-        }
-        failure {
-           
-            script {
-               
-                def powershellCommand = """
-                    \$SMTPServer = "smtp.gmail.com"
-                    \$SMTPFrom = "vanshbhai236@gmail.com"
-                    \$SMTPTo = "vanshbhai236@gmail.com"
-                    \$SMTPSubject = "Pipeline Failure"
-                    \$SMTPBody = "Execution Failed"
-                    \$SMTPUsername = "vanshbhai236@gmail.com"
-                    \$SMTPPassword = "unfr hgpe mwdc mvrz"
-    
-                    Send-MailMessage -From \$SMTPFrom -to \$SMTPTo -Subject \$SMTPSubject -Body \$SMTPBody -SmtpServer \$SMTPServer -UseSsl -Port 587 -Credential (New-Object System.Management.Automation.PSCredential \$SMTPUsername, (ConvertTo-SecureString -AsPlainText \$SMTPPassword -Force))
-                """
-                powershell(powershellCommand)
-            }
-            echo 'Pipeline Execution Failed'
         }
     }
 }
