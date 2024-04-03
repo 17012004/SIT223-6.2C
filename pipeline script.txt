@@ -5,34 +5,34 @@ pipeline {
             steps {
                 echo "Fetching the source code from GitHub"
                 echo "Compiling the code and generating artifacts." // will print
+                echo "Build successful with Maven"
             }
         }
         stage('Unit and Integration Tests') {
             steps {
                 echo "Running unit tests started and completed"
                 echo "Running integration tests started and completed"
+                echo "Unit and integration test successfully completed using JUnit"
             }
             post {
                 success {
-                    mail to: 'vanshbhai236@gmail.com',
-                        subject: 'Unit and Integration Tests Success',
-                        body: 'The unit and integration tests have succeeded. Find attached logs for more information.'
+                    mail bcc: '', body: 'Bhai ki Body', cc: 'aryannandal545@gmail.com', from: '', replyTo: '', subject: 'Hello Buddy?', to: 'vanshbhai236@gmail.com'
                 }
                 failure {
-                    mail to: 'vanshbhai236@gmail.com',
-                        subject: 'Unit and Integration Tests Failed',
-                        body: 'The unit and integration tests have failed. Find attached logs for more information.'
+                   mail bcc: '', body: 'Bhai ki Body failed', cc: 'aryannandal545@gmail.com', from: '', replyTo: '', subject: 'Hello Buddy?', to: 'vanshbhai236@gmail.com'
                 }
             }
         }
         stage('Code Analysis') {
             steps {
                 echo "Running Code Analysis started and completed"
+                echo "Code analysis done using FindBugs"
             }
         }
         stage('Security Scan') {
             steps {
                 echo "Running Security Scan started and completed"
+                echo "Security Scan done using Nessus" //vulnerability scanner
             }
             post {
                 success {
@@ -50,11 +50,13 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo "Running Deploy to Staging started and completed"
+                echo "Deploy to staging completed using Jenkins Deploy Plugin" //enable automated deployment of applications
             }
         }
         stage('Integration Tests on Staging') {
             steps {
                 echo "Running Integration Tests on Staging started and completed"
+                echo "tests successful using JUnits"
             }
             post {
                 success {
@@ -72,6 +74,7 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo "Running Integration Tests on Staging started and completed"
+                echo "Production successfully completed using Jenkins Deploy Plugin" //enable automated deployment of applications
             }
         }
     }
